@@ -135,22 +135,21 @@ Review.init(
         isBlocked: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
-        },
+        },        
     },
     {
         sequelize,
         modelName: 'Review',
-        tableName: 'review',
+        tableName: 'reviews',
         timestamps: false,
         paranoid: true,
     }
 );
-
-// Genre Model
 export class Genre extends Model {
     declare id: number;
     declare name: string;
 }
+
 
 Genre.init(
     {
@@ -169,7 +168,6 @@ Genre.init(
         modelName: 'Genre',
         tableName: 'genre',
         timestamps: false,
-        paranoid: true,
     }
 );
 
@@ -201,7 +199,6 @@ Media.init(
     }
 );
 
-// ReviewGenres Model (Junction table for many-to-many relationship between Review and Genre)
 export class ReviewGenres extends Model {
     declare review_fk: number;
     declare genre_fk: number;
@@ -212,23 +209,24 @@ ReviewGenres.init(
         review_fk: {
             type: DataTypes.BIGINT.UNSIGNED,
             allowNull: false,
-            references: { model: 'review', key: 'id' }, // foreign key for Review
-            primaryKey: true, // Set as primary key
+            references: { model: 'reviews', key: 'id' }, // Reference to reviews
+            primaryKey: true,
         },
         genre_fk: {
             type: DataTypes.BIGINT.UNSIGNED,
             allowNull: false,
-            references: { model: 'genre', key: 'id' }, // foreign key for Genre
-            primaryKey: true, // Set as primary key
+            references: { model: 'genre', key: 'id' }, // Reference to genre
+            primaryKey: true,
         },
     },
     {
         sequelize,
         modelName: 'ReviewGenres',
         tableName: 'review_genres',
-        timestamps: false, // Disable timestamps for junction table
+        timestamps: false, // No timestamps needed for a junction table
     }
 );
+
 
 // Role Model
 export class Role extends Model {
@@ -346,15 +344,16 @@ Review.belongsTo(Media, { foreignKey: 'media_fk' });
 // Many-to-Many relationship between Review and Genre through ReviewGenres
 Review.belongsToMany(Genre, {
     through: ReviewGenres,
-    foreignKey: 'review_fk', // Explicitly setting the foreign key in the review_genres table
-    otherKey: 'genre_fk',    // Setting the other foreign key for genre
+    foreignKey: 'review_fk', // Foreign key in ReviewGenres for Review
+    otherKey: 'genre_fk',   // Foreign key in ReviewGenres for Genre
 });
 
 Genre.belongsToMany(Review, {
     through: ReviewGenres,
-    foreignKey: 'genre_fk',  // Explicitly setting the foreign key in the review_genres table
-    otherKey: 'review_fk',   // Setting the other foreign key for review
+    foreignKey: 'genre_fk', // Foreign key in ReviewGenres for Genre
+    otherKey: 'review_fk', // Foreign key in ReviewGenres for Review
 });
+
 
 // One-to-Many relationship between Review and ReviewActions
 ReviewActions.belongsTo(Review, { foreignKey: 'review_fk' });

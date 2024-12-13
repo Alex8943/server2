@@ -2,11 +2,12 @@ import express from "express";
 import sequelize from "../other_services/sequelizeConnection";
 import { QueryTypes } from "sequelize";
 import { fetchDataFromQueue } from "../other_services/rabbitMQ";
+import verifyUser from "./authenticateUser";
 
 const router = express.Router();
 
 // Create a new review
-router.post("/review", async (req, res) => {
+router.post("/review", verifyUser, async (req, res) => {
     try {
         const result = await createReview(req.body);
         res.status(200).send(result);

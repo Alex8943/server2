@@ -14,10 +14,10 @@ export default function verifyUser(req: any, res: any, next: any) {
     console.log("Decoded Token:", decoded);
 
 
-    const userIdFromToken = decoded.user_id; // Adjust based on your JWT payload structure
+    /*const userIdFromToken = decoded.user_id; // Adjust based on your JWT payload structure
     if (req.params.id && parseInt(req.params.id) !== userIdFromToken) {
       return res.status(403).json({ message: "You are not authorized to access this resource" });
-    }
+    }*/
 
     next();
   } catch (error: any) {

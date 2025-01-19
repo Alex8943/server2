@@ -11,13 +11,10 @@ export default function verifyUser(req: any, res: any, next: any) {
     const token = authHeader.split(" ")[1]; // Extract the token
 
     const decoded = jwt.verify(token, "secret") as JwtPayload;
+    if(!decoded.user || !decoded.user.id) {
+      return res.status(400).send({ error: "User ID is missing in the token" });
+    }
     console.log("Decoded Token:", decoded);
-
-
-    /*const userIdFromToken = decoded.user_id; // Adjust based on your JWT payload structure
-    if (req.params.id && parseInt(req.params.id) !== userIdFromToken) {
-      return res.status(403).json({ message: "You are not authorized to access this resource" });
-    }*/
 
     next();
   } catch (error: any) {

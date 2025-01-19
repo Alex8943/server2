@@ -34,8 +34,14 @@ export async function createReview(values: any) {
                 ],
                 type: QueryTypes.INSERT,
                 transaction: t,
+                  
             }
         );
+
+        if (!values.user_fk) {
+            throw new Error("User ID (user_fk) is required in the payload");
+          }
+
 
         console.log("Basic review created with ID:", reviewId);
 
